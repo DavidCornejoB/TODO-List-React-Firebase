@@ -1,0 +1,61 @@
+.tarea-contenedor {
+    width: 500px;
+    min-height: 60px;
+    background-color: gray;
+    margin: 5px 0;
+    padding: 8px 15px 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 7px;
+    border: 2px solid black;
+    cursor: pointer;
+}
+
+.tarea-contenedor:nth-child(3n + 1){
+    background-color: #7cf9d6;
+}
+
+.tarea-contenedor:nth-child(3n + 2){
+    background-color: #6feeb7
+}
+
+.tarea-contenedor:nth-child(3n + 3){
+    background-color: #7fccb6;
+}
+
+.tarea-contenedor:nth-child(3n + 4){
+    background-color: #74a7b2;
+}
+
+.tarea-contenedor:nth-child(3n + 5){
+    background-color: #8faff2;
+}
+
+/* TAREA COMPLETADA */
+.tarea-contenedor.completada {
+    background-color: gray;
+    text-decoration: line-through;
+    color: white;
+
+    & .tarea-texto {
+        color: white;
+    }
+}
+
+.tarea-texto {
+    width: 100%;
+    height: 100%;
+    font-size: large;
+    display: flex;
+    align-items: center;
+    overflow-wrap: anywhere;
+    color: black;
+}
+
+.tarea-icono {
+    width: 30px;
+    height: 30px;
+    margin: 20px;
+    color: aliceblue;
+}
