@@ -4,6 +4,7 @@ import TareaFormulario from "./TareaFormulario";
 
 import '../Stylesheets/ListaTareas.css';
 
+// CONEXIÓN BASE DE DATOS FIREBASE
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import firebaseConfig from "../firebase-config";
@@ -29,7 +30,7 @@ function ListaTareas() {
 
             setTareas(listaTareas);
         })()
-    }, [])
+    })
 
     const agregarTarea = async (tarea) => {
         if (tarea.texto.trim()) {
