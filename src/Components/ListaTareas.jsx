@@ -32,7 +32,7 @@ function ListaTareas() {
             });
             setTareas(listaTareas);
         })()
-    });
+    }, [DATABASE]);
 
     /**
      * FUNCIÓN PARA AGREGAR TAREA A LA LISTA DE TAREAS:
