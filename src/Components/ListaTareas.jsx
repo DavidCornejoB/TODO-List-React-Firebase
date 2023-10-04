@@ -13,65 +13,98 @@ import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase
 
 function ListaTareas() {
 
+    // PARA CONEXIÓN CON FIREBASE:
     const fireConfig = firebaseConfig;
-
     const app = initializeApp(fireConfig);
     const db = getFirestore(app);
 
     const [tareas, setTareas] = useState([]);
+    const [mensaje, setMensaje] = useState("Mensajes de error se mostrarán en la siguiente línea. Mensajes de error se mostrarán en la siguiente línea. Mensajes de error se mostrarán en la siguiente línea.");
 
+    /**
+     * OBTENEMOS DE LA BASE DE DATOS TODAS LAS TAREAS ALMACENADAS:
+     */
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const listaTareas = [];
             const querySnapshot = await getDocs(collection(db, "tareas"));
             querySnapshot.forEach((doc) => {
                 listaTareas.push(doc.data());
             });
-
             setTareas(listaTareas);
         })()
-    })
+    });
 
+    /**
+     * FUNCIÓN PARA AGREGAR TAREA A LA LISTA DE TAREAS:
+     * @param {*} tarea CORRESPONDE A LA TAREA QUE SERÁ ALMACENADA EN LA BASE DE DATOS
+     */
     const agregarTarea = async (tarea) => {
         if (tarea.texto.trim()) {
             tarea.texto = tarea.texto.trim();
-            const tareasActualizadas = [tarea, ...tareas];
-            console.log("agregada ", tareasActualizadas);
-            setTareas(tareasActualizadas);
 
-            // FIREBASE:
+            // AÑADIR TAREA EN BASE DE DATOS:
             try {
-                const docRef = await addDoc(collection(db, "tareas"), tarea);
-                console.log("Document written with ID: ", docRef.id);
-              } catch (e) {
-                console.error("Error adding document: ", e);
+                await addDoc(collection(db, "tareas"), tarea);
+                setMensaje("Tarea agregada con éxito");
+                setTimeout(() => setMensaje(""), 2000);
+              } catch (error) {
+                setMensaje("Error añadiendo tarea: ", error);
+                setTimeout(() => setMensaje(""), 3000);
               }
+
+            const tareasActualizadas = [tarea, ...tareas];
+            setTareas(tareasActualizadas);
         }
     };
 
+    /**
+     * FUNCIÓN PARA ELIMINAR UNA TAREA EN BASE A SU ID.
+     * @param {*} id CORRESPONDE AL ID DE LA TAREA QUE SERÁ ELIMINADA
+     */
     const eliminarTarea = async (id) => {
+
+        // ELIMINAR TAREA EN BASE DE DATOS:
+        try {
+            const querySnapshot = await getDocs(collection(db, "tareas"));
+            querySnapshot.forEach(async (docu) => {
+                if (docu.data().id === id) {
+                    await deleteDoc(doc(db, "tareas", docu.id));
+                    setMensaje("Tarea eliminada con éxito");
+                    setTimeout(() => setMensaje(""), 2000);
+                }
+            });
+        } catch (error) {
+            setMensaje("Error eliminando tarea: ", error);
+            setTimeout(() => setMensaje(""), 3000);
+        }
+
         const tareasActualizadas = tareas.filter(tarea => tarea.id !== id);
         setTareas(tareasActualizadas);
 
-        const querySnapshot = await getDocs(collection(db, "tareas"));
-
-        querySnapshot.forEach(async (docu) => {
-            if (docu.data().id === id) {
-                await deleteDoc(doc(db, "tareas", docu.id));
-            }
-        });
     };
 
+    /**
+     * FUNCIÓN PARA CAMBIAR EL ESTADO "COMPLETADO" DE LA TAREA QUE HAYA SIDO CLICKEADA.
+     * @param {*} id CORRESPONDE A LA TAREA CUYO ESTADO "COMPLETADO" CAMBIARÁ
+     */
     const completarTarea = async (id) => {
-        const querySnapshot = await getDocs(collection(db, "tareas"));
+        try {
+            // ACTUALIZAR TAREA EN BASE DE DATOS:
+            const querySnapshot = await getDocs(collection(db, "tareas"));
+            querySnapshot.forEach(async (docu) => {
+                if (docu.data().id === id) {
+                    const tareaRef = doc(db, 'tareas', docu.id);
+                    const tareaCompletada = docu.data().completada;
+                    await updateDoc(tareaRef, {"completada": !tareaCompletada})
+                }
+            });
+            
+        } catch (error) {
+            setMensaje("Error actualizando tarea: ", error);
+            setTimeout(() => setMensaje(""), 3000);
+        }
 
-        querySnapshot.forEach(async (docu) => {
-            if (docu.data().id === id) {
-                const tareaRef = doc(db, 'tareas', docu.id);
-                const tareaCompletada = docu.data().completada;
-                await updateDoc(tareaRef, {"completada": !tareaCompletada})
-            }
-        });
 
         const tareasActualizadas = tareas.map(tarea => {
             if (tarea.id === id) {
@@ -85,6 +118,7 @@ function ListaTareas() {
     return (
         <>
             <TareaFormulario onSubmit={agregarTarea}/>
+            <div className="mensaje-error">{mensaje}</div>
             <div className="tareas-lista-contenedor">
                 { tareas.map((tarea) => <Tarea key={tarea.id} id={tarea.id} texto={tarea.texto} completada={tarea.completada} completarTarea={completarTarea} eliminarTarea={eliminarTarea} />) }
             </div>
