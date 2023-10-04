@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Tarea from "./Tarea";
 import TareaFormulario from "./TareaFormulario";
-
 import '../Stylesheets/ListaTareas.css';
 
 // CONEXIÓN BASE DE DATOS FIREBASE
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import firebaseConfig from "../firebase-config";
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"; 
-
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"; 
 
 function ListaTareas() {
 
     // PARA CONEXIÓN CON FIREBASE:
-    const fireConfig = firebaseConfig;
-    const app = initializeApp(fireConfig);
-    const db = getFirestore(app);
+    const FIREBASE_CONFIG = firebaseConfig;
+    const APP = initializeApp(FIREBASE_CONFIG);
+    const DATABASE = getFirestore(APP);
+    const COLLECTION = "tareas";
 
     const [tareas, setTareas] = useState([]);
     const [mensaje, setMensaje] = useState("");
@@ -27,8 +25,8 @@ function ListaTareas() {
      */
     useEffect(() => {
         (async () => {
-            const listaTareas = [];
-            const querySnapshot = await getDocs(collection(db, "tareas"));
+            let listaTareas = [];
+            let querySnapshot = await getDocs(collection(DATABASE, COLLECTION));
             querySnapshot.forEach((doc) => {
                 listaTareas.push(doc.data());
             });
@@ -46,7 +44,7 @@ function ListaTareas() {
 
             // AÑADIR TAREA EN BASE DE DATOS:
             try {
-                await addDoc(collection(db, "tareas"), tarea);
+                await addDoc(collection(DATABASE, COLLECTION), tarea);
                 setIsError(false);
                 setMensaje("Tarea agregada con éxito");
                 setTimeout(() => setMensaje(""), 2000);
@@ -56,7 +54,7 @@ function ListaTareas() {
                 setTimeout(() => setMensaje(""), 3000);
               }
 
-            const tareasActualizadas = [tarea, ...tareas];
+            let tareasActualizadas = [tarea, ...tareas];
             setTareas(tareasActualizadas);
         }
     };
@@ -69,10 +67,10 @@ function ListaTareas() {
 
         // ELIMINAR TAREA EN BASE DE DATOS:
         try {
-            const querySnapshot = await getDocs(collection(db, "tareas"));
+            let querySnapshot = await getDocs(collection(DATABASE, COLLECTION));
             querySnapshot.forEach(async (docu) => {
                 if (docu.data().id === id) {
-                    await deleteDoc(doc(db, "tareas", docu.id));
+                    await deleteDoc(doc(DATABASE, COLLECTION, docu.id));
                     setIsError(false);
                     setMensaje("Tarea eliminada con éxito");
                     setTimeout(() => setMensaje(""), 2000);
@@ -84,9 +82,8 @@ function ListaTareas() {
             setTimeout(() => setMensaje(""), 3000);
         }
 
-        const tareasActualizadas = tareas.filter(tarea => tarea.id !== id);
+        let tareasActualizadas = tareas.filter(tarea => tarea.id !== id);
         setTareas(tareasActualizadas);
-
     };
 
     /**
@@ -96,11 +93,11 @@ function ListaTareas() {
     const completarTarea = async (id) => {
         try {
             // ACTUALIZAR TAREA EN BASE DE DATOS:
-            const querySnapshot = await getDocs(collection(db, "tareas"));
+            let querySnapshot = await getDocs(collection(DATABASE, COLLECTION));
             querySnapshot.forEach(async (docu) => {
                 if (docu.data().id === id) {
-                    const tareaRef = doc(db, 'tareas', docu.id);
-                    const tareaCompletada = docu.data().completada;
+                    let tareaRef = doc(DATABASE, COLLECTION, docu.id);
+                    let tareaCompletada = docu.data().completada;
                     await updateDoc(tareaRef, {"completada": !tareaCompletada})
                 }
             });
@@ -111,8 +108,7 @@ function ListaTareas() {
             setTimeout(() => setMensaje(""), 3000);
         }
 
-
-        const tareasActualizadas = tareas.map(tarea => {
+        let tareasActualizadas = tareas.map(tarea => {
             if (tarea.id === id) {
                 tarea.completada = !tarea.completada;
             }
