@@ -19,7 +19,8 @@ function ListaTareas() {
     const db = getFirestore(app);
 
     const [tareas, setTareas] = useState([]);
-    const [mensaje, setMensaje] = useState("Mensajes de error se mostrarán en la siguiente línea. Mensajes de error se mostrarán en la siguiente línea. Mensajes de error se mostrarán en la siguiente línea.");
+    const [mensaje, setMensaje] = useState("");
+    const [isError, setIsError] = useState(false);
 
     /**
      * OBTENEMOS DE LA BASE DE DATOS TODAS LAS TAREAS ALMACENADAS:
@@ -46,9 +47,11 @@ function ListaTareas() {
             // AÑADIR TAREA EN BASE DE DATOS:
             try {
                 await addDoc(collection(db, "tareas"), tarea);
+                setIsError(false);
                 setMensaje("Tarea agregada con éxito");
                 setTimeout(() => setMensaje(""), 2000);
               } catch (error) {
+                setIsError(true);
                 setMensaje("Error añadiendo tarea: ", error);
                 setTimeout(() => setMensaje(""), 3000);
               }
@@ -70,11 +73,13 @@ function ListaTareas() {
             querySnapshot.forEach(async (docu) => {
                 if (docu.data().id === id) {
                     await deleteDoc(doc(db, "tareas", docu.id));
+                    setIsError(false);
                     setMensaje("Tarea eliminada con éxito");
                     setTimeout(() => setMensaje(""), 2000);
                 }
             });
         } catch (error) {
+            setIsError(true);
             setMensaje("Error eliminando tarea: ", error);
             setTimeout(() => setMensaje(""), 3000);
         }
@@ -101,6 +106,7 @@ function ListaTareas() {
             });
             
         } catch (error) {
+            setIsError(true);
             setMensaje("Error actualizando tarea: ", error);
             setTimeout(() => setMensaje(""), 3000);
         }
@@ -118,7 +124,7 @@ function ListaTareas() {
     return (
         <>
             <TareaFormulario onSubmit={agregarTarea}/>
-            <div className="mensaje-error">{mensaje}</div>
+            <div className={isError ? "mensaje-error error" : "mensaje-error"}>{mensaje}</div>
             <div className="tareas-lista-contenedor">
                 { tareas.map((tarea) => <Tarea key={tarea.id} id={tarea.id} texto={tarea.texto} completada={tarea.completada} completarTarea={completarTarea} eliminarTarea={eliminarTarea} />) }
             </div>
