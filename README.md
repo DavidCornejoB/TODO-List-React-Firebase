@@ -63,6 +63,10 @@ firebase deploy
 
 ---
 
+## Resultados:
+
+Para ver la aplicación funcionando, accede [al siguiente link](https://lista-tareas-react-ea234.web.app).
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
