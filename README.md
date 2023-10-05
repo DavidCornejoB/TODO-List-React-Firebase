@@ -14,25 +14,25 @@ Aplicación sencilla hecha con React que permite ingresar tareas a una lista de 
 ### React Icons:
 
 ```
-$ npm install react-icons --save
+npm install react-icons --save
 ```
 
 ### uuid:
 
 ```
-$ npm install uuid
+npm install uuid
 ```
 
 ### Firestore database:
 
 ```
-$ npm install firebase reactfire@next
+npm install firebase reactfire@next
 ```
 
 ### Firebase Hosting:
 
 ```
-$ npm install -g firebase-tools
+npm install -g firebase-tools
 ```
 
 Para inicializar el proyecto, ejecutar los siguientes comandos:
@@ -40,25 +40,25 @@ Para inicializar el proyecto, ejecutar los siguientes comandos:
 Acceder a la cuenta de Google:
 
 ```
-$ firebase login
+firebase login
 ```
 
 Inicializar en el proyecto (ejecutar en el directorio raíz):
 
 ```
-$ firebase init
+firebase init
 ```
 
 Hacemos un build del proyecto. En el caso de React, ejecutar el siguiente comando:
 
 ```
-$ npm run build
+npm run build
 ```
 
 Luego de hacer el build del proyecto, ejecutamos el siguiente comando (En la configuración previa de firebase de directorio público, escribir "build" en vez de "public"):
 
 ```
-$ firebase deploy
+firebase deploy
 ```
 
 ---
