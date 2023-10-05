@@ -18,11 +18,31 @@
 .tarea-boton {
     padding: 16px;
     font-size: 18px;
-    border: none;
+    border: 1px solid black;
     border-radius: 0 4px 4px 0;
     cursor: pointer;
     outline: none;
     background: aquamarine;
     color: black;
     text-transform: capitalize;
+}
+
+@media (max-width:800px){
+    .tarea-boton {
+        margin: 18px;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width:600px){
+    .tarea-input {
+        font-size: medium;
+    }
+}
+
+@media (max-width:360px){
+    .tarea-input {
+        width: 95%;
+        font-size: small;
+    }
 }
